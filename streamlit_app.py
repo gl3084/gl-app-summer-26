@@ -6,25 +6,26 @@ import numpy as np
 import sklearn
 
 
-st.title("Wellness4Youth Dashboard 🧠❤️‍🩹")
+st.title("LifeMetrics Dashboard 🏥")
 st.write(
     "Gareth Liu | https://github.com/gl3084/gl-app-summer-26 | June 2026"
 )
 
 st.set_page_config(
-    page_title = "Wellness4Youth 🧠❤️‍🩹",
+    page_title = "LifeMetrics 🏥",
     layout = "centered",
-    page_icon = "🧘",
+    page_icon = "🏥",
 )
 
 ## Step 01 - Setup
-st.sidebar.title("Teen Mental Health Awareness Co. 🧠❤️‍🩹")
+st.sidebar.title("LifeMetrics - Life Expectancy Agency 🏥")
 page = st.sidebar.selectbox("Select Page",["Introduction 📘","Visualization 📊", "Automated Report 📑","Prediction"])
 
 
 st.image("social_media_stress.png")
 
-df = pd.read_csv("Teen_Mental_Health_Dataset.csv")
+df = pd.read_csv("Life Expectancy Data.csv")
+df_cleaned = df.dropna()
 
 ## Step 02 - Load dataset
 if page == "Introduction 📘":
@@ -39,19 +40,39 @@ if page == "Introduction 📘":
     rows = st.slider("Select a number of rows to display",5,20,5)
     st.dataframe(df.head(rows))
 
-    st.markdown("##### Missing values")
-    missing = df.isnull().sum()
-    st.write(missing)
 
-    if missing.sum() == 0:
-        st.success("✅ No missing values found")
-    else:
-        st.warning("⚠️ You have missing values")
+    tab1, tab2 = st.tabs(["Original Data Set", "Cleaned Data Set"])
 
-    st.markdown("##### 📈 Summary Statistics")
-    if st.button("Show Describe Table"):
-        st.dataframe(df.describe())
+    with tab1:
+        st.markdown("##### Missing values")
+        missing = df.isnull().sum()
+        st.write(missing)
 
+        if missing.sum() == 0:
+            st.success("✅ No missing values found")
+        else:
+            st.warning("⚠️ You have missing values")
+        
+        st.markdown("##### 📈 Summary Statistics")
+        if st.button("Show Describe Original Table"):
+            st.dataframe(df.describe())
+
+    with tab2:
+        st.markdown("##### Missing values")
+        missing = df_cleaned.isnull().sum()
+        st.write(missing)
+
+        if missing.sum() == 0:
+            st.success("✅ No missing values found")
+        else:
+            st.warning("⚠️ You have missing values")
+
+        st.markdown("##### 📈 Summary Statistics")
+        if st.button("Show Describe Cleaned Table"):
+            st.dataframe(df_cleaned.describe())
+
+
+"""
     df2 = df.drop(["gender", "platform_usage", "social_interaction_level"], axis = 1)
     
     st.subheader("Correlation Matrix")
@@ -62,3 +83,4 @@ if page == "Introduction 📘":
     sns.heatmap(df_numeric.corr(),annot=True,fmt=".2f",cmap='coolwarm')
     ## render the plot in streamlit 
     st.pyplot(fig_corr)
+"""
