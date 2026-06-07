@@ -99,12 +99,8 @@ elif page == "Visualization 📊":
 
     with tab3:
         fig, ax = plt.subplots()
-        ax.scatter(df[col_x], df[col_y])
-        ax.set_xlabel(col_x)
-        ax.set_ylabel(col_y)
-        ax.set_title(f"{col_y} vs. {col_x}")
+        sns.scatterplot(data=df, x=col_x, y=col_y)
         st.pyplot(fig)
-        
         
     with tab4:
         st.subheader("Correlation Matrix")
