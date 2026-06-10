@@ -37,8 +37,50 @@ if page == "Introduction 📘":
 
     st.markdown("##### ℹ️ Data Preview")
     st.write("Our analysis is based on a global life expectancy dataset under the World Health Organization (WHO). It contains demographic, economic, healthcare, and educational information from various countries (around 193) across 2000 to 2015. A preview of the dataset is shown below:")
+    
     rows = st.slider("Select a number of rows to display",5,20,5)
-    st.dataframe(df_original.head(rows))
+    tabhead, tabtail, tabrand = st.tabs(["First rows", "Last rows", "Random sample"])
+    with tabhead:
+        st.dataframe(df.head(rows))
+    with tabtail:
+        st.dataframe(df.tail(rows))   
+    with tabrand:
+        st.dataframe(df.sample(rows))
+
+
+    variable_dict = pd.DataFrame({
+        "Variable": [
+            "Country", "Year", "Status", "Life expectancy", "Adult Mortality", "Infant deaths", "Alcohol", "Percentage expenditure", "Hepatitis B", "Measles", "BMI", "Under-five deaths", "Polio", "Total expenditure", "Diphtheria", "HIV/AIDS", "GDP", "Population", "Thinness 1-19 years", "Thinness 5-9 years", "Income com of resources", "Schooling"
+        ],
+        "Description": [
+            "Country where data was collected",
+            "Year of observation",
+            "Developed or Developing status",
+            "Average number of years a person is expected to live",
+            "Probability of dying between ages 15 and 60 per 1000 population",
+            "Number of Infant Deaths per 1000 population",
+            "Liters of pure alcohol consumed per capita",
+            "Health expenditure as percentage of Gross Domestic Product per capita",
+            "Hep B immunization coverage among 1-year-olds percentage",
+            "Number of reported cases per 1000 population",
+            "Average Body Mass Index of entire population",
+            "Deaths under age five per 1000 live births",
+            "Polio immunization coverage among 1-year-olds percentage",
+            "General government expenditure on health as a percentage of total government expenditure",
+            "DTP3 immunization coverage among 1-year-olds percentage",
+            "Deaths from HIV/AIDS per 1000 live births",
+            "Gross Domestic Product per capita in USD",
+            "Population of the country",
+            "Percentage of adolescents aged 10-19 classified as thin",
+            "Percentage of children aged 5-9 classified as thin",
+            "Index measuring income/resource composition from 0 to 1",
+            "Average number of years of schooling"
+        ],
+        "Type": [str(df[col].dtype) for col in df.columns]
+    })
+    st.markdown("##### 📙 Variable Dictionary")
+    st.dataframe(variable_dict, use_container_width = True)
+
 
     st.markdown("##### ❗ Data Cleaning")
     st.write("To ensure complete records, rows containing missing values were removed in the data visualization and predication pages. This reduced the dataset from 2938 to 1649 entries. One limitation of this approach is that countries with incomplete reporting were disproportionately excluded, which may introduce bias into the analysis. A comparison between the original and cleaned dataset can be viewed below:")
@@ -46,6 +88,18 @@ if page == "Introduction 📘":
     tab1, tab2 = st.tabs(["Original Data Set", "Cleaned Data Set"])
 
     with tab1:
+        st.markdown("##### General Information")
+        col1, col2, col3, col4 = st.columns(4)
+
+        with col1:
+            st.metric("Rows", df_original.shape[0])
+        with col2:
+            st.metric("Features", df_original.shape[1])
+        with col3:
+            st.metric("Target", "Life exp")
+        with col4:
+            st.metric("Source", "WHO")
+
         st.markdown("##### Missing values")
         missing = df_original.isnull().sum()
         st.write(missing)
@@ -56,12 +110,22 @@ if page == "Introduction 📘":
             st.warning("⚠️ You have missing values")
         
         st.markdown("##### 📈 Summary Statistics")
-        if st.button("Show Original Dataset (Rows, Columns)"):
-            st.write(df_original.shape)
         if st.button("Show Original Dataset Stats"):
             st.dataframe(df_original.describe())
 
     with tab2:
+        st.markdown("##### General Information")
+        col1, col2, col3, col4 = st.columns(4)
+
+        with col1:
+            st.metric("Rows", df.shape[0])
+        with col2:
+            st.metric("Features", df.shape[1])
+        with col3:
+            st.metric("Target", "Life exp")
+        with col4:
+            st.metric("Source", "WHO")
+
         st.markdown("##### Missing values")
         missing = df.isnull().sum()
         st.write(missing)
@@ -72,8 +136,6 @@ if page == "Introduction 📘":
             st.warning("⚠️ You have missing values")
 
         st.markdown("##### 📈 Summary Statistics")
-        if st.button("Show Cleaned Dataset (Rows, Columns)"):
-            st.write(df.shape)
         if st.button("Show Cleaned Dataset Stats"):
             st.dataframe(df.describe())
 
