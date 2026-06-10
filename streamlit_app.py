@@ -267,3 +267,8 @@ elif page == "Prediction 🔮":
     ax.set_xlabel("Predicted")
     ax.set_title("Actual vs Predicted")
     st.pyplot(fig)
+
+    st.divider()
+    st.markdown("##### Coefficient Values")
+    coeff_df = pd.DataFrame(model.coef_, X.columns, columns = ["Coefficient"]).sort_values(by="Coefficient", key=abs, ascending=False)
+    st.dataframe(coeff_df, use_container_width = True)
