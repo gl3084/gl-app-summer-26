@@ -174,6 +174,32 @@ elif page == "Visualization 📊":
         ## render the plot in streamlit 
         st.pyplot(fig_corr)
 
+    st.divider()
+    st.subheader("Distribution of Life Expectancy")
+    figh, axh = plt.subplots()
+    sns.histplot(data=df, x="Life expectancy ", bins=20, kde=True)
+    st.pyplot(figh)
+
+    col1, col2, col3, col4, col5 = st.columns(5)
+
+    with col1:
+        st.metric("Mean", round(df["Life expectancy "].mean(), 2))
+    with col2:
+        st.metric("Median", round(df["Life expectancy "].median(), 2))
+    with col3:
+        st.metric("Std", round(df["Life expectancy "].std(), 2))
+    with col4:
+        st.metric("Min", df["Life expectancy "].min())
+    with col5:
+        st.metric("Max", df["Life expectancy "].max())
+
+    st.divider()
+
+    st.markdown("##### Key Insights")
+    st.write("Schooling and income composition of resources showed the strongest positive corrleations with life expectancy (r ≈ 0.70)")
+    st.write("Developed countries generally exhibited higher life expectancy than developing countries.")
+    st.write("Adult mortality had the strongest negative correlation with life expectancy as expected")
+    
 
 elif page == "Prediction 🔮":
     st.subheader("03 Prediction with Linear Regression")
@@ -190,6 +216,7 @@ elif page == "Prediction 🔮":
     features_selection = st.sidebar.multiselect("Select features (X)", list_var, default=list_var)
     target_selection  = st.sidebar.selectbox("Select target variable (Y))", list_var)
     selected_metrics = st.sidebar.multiselect("Metrics to display", ["Mean Squared Error (MSE)", "Mean Absolute Error (MAE)", "R² Score"], default=["Mean Absolute Error (MAE)"])
+    test_size = st.sidebar.slider("Choose test size (%)",10,40,20)
 
     ### i) X and y
     X = df[features_selection]
@@ -200,8 +227,11 @@ elif page == "Prediction 🔮":
 
     ### ii) train_test_split
     from sklearn.model_selection import train_test_split
-    X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2)
+    X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=(test_size/100))
 
+    st.write(f"Training set: {X_train.shape[0]}")
+    st.write(f"Testing set: {X_test.shape[0]}")
+    st.divider()
 
     ## Model 
 
@@ -227,7 +257,7 @@ elif page == "Prediction 🔮":
         r2 = metrics.r2_score(y_test, predictions)
         st.write(f"- **R2** {r2:,.3f}")
 
-    st.success(f"My model performance is of {np.round(mae,2)}")
+    st.success(f"My model performance is of {np.round(mae,2)} years")
 
     fig, ax = plt.subplots()
     ax.scatter(y_test,predictions,alpha=0.5)
