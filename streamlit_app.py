@@ -257,7 +257,7 @@ elif page == "Prediction 🔮":
         r2 = metrics.r2_score(y_test, predictions)
         st.write(f"- **R2** {r2:,.3f}")
 
-    st.success(f"My model performance is of {np.round(mae,2)} years")
+    st.success(f"The model's prediction is off by {np.round(mae,2)} years on average.")
 
     fig, ax = plt.subplots()
     ax.scatter(y_test,predictions,alpha=0.5)
