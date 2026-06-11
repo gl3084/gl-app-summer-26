@@ -213,8 +213,8 @@ elif page == "Prediction 🔮":
 
     list_var = list(df.columns)
 
-    features_selection = st.sidebar.multiselect("Select features (X)", list_var, default=list_var)
-    target_selection  = st.sidebar.selectbox("Select target variable (Y))", list_var)
+    target_selection  = st.sidebar.selectbox("Select target variable (Y)", list_var)
+    features_selection = st.sidebar.multiselect("Select features (X)", list(df.columns.drop(target_selection)), default=list(df.columns.drop(target_selection)))
     selected_metrics = st.sidebar.multiselect("Metrics to display", ["Mean Squared Error (MSE)", "Mean Absolute Error (MAE)", "R² Score"], default=["Mean Absolute Error (MAE)"])
     test_size = st.sidebar.slider("Choose test size (%)",10,40,20)
 
