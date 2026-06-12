@@ -200,14 +200,30 @@ elif page == "Visualization 📊":
         st.metric("Min", df["Life expectancy "].min())
     with col5:
         st.metric("Max", df["Life expectancy "].max())
-
+    
+    st.write("Most countires in the dataset have life expectancies between 65 and 80 years, with the distribution centered around 72 years. The mean is slightly lower than the median, suggesting that a smaller number of countries with very low life expectancy values pull the average downard.")
     st.divider()
 
-    st.markdown("##### Key Insights")
-    st.write("Schooling and income composition of resources showed the strongest positive corrleations with life expectancy (r ≈ 0.70)")
-    st.write("Developed countries generally exhibited higher life expectancy than developing countries.")
-    st.write("Adult mortality had the strongest negative correlation with life expectancy as expected")
-    
+    st.subheader("Developing vs Developed Countries")
+    fig3, ax3 = plt.subplots()
+    sns.boxplot(data=df, x="Status", y="Life expectancy ")
+    st.pyplot(fig3)
+    st.write("Developed countries show significantly higher life expectancy than developing countries. The minimum for developed countries is around the median of developing countries. Developed countries also show less variability, while developing countries have a wider range of outcomes and several low life expectancy outliers.")
+    st.divider()
+
+    st.subheader("Income Composition and Life Exp. by Country Status")
+    fig, ax = plt.subplots()
+    sns.scatterplot(data=df, x="Income composition of resources", y="Life expectancy ", hue="Status")
+    st.pyplot(fig)
+    st.write("Developed countries generally exhibit both higher income composition scores and longer life expectancy, illustating how many socioeconomic indicators are interconnected.")
+    st.divider()
+
+    st.subheader("Avg. Years of Schooling and Life Exp. by Country Status")
+    fig2, ax2 = plt.subplots()
+    sns.scatterplot(data=df, x="Schooling", y="Life expectancy ", hue="Status")
+    st.pyplot(fig2)
+    st.write("Countries with higher average years of schooling generally exhibit longer life expectancy. Developed countries cluster in the upper-right region of the graph, suggesting that education and broader societal development are strongly associated with population health outcomes.")
+
 
 elif page == "Prediction 🔮":
     st.subheader("03 Prediction with Linear Regression")
