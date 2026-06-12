@@ -174,6 +174,14 @@ elif page == "Visualization 📊":
         ## render the plot in streamlit 
         st.pyplot(fig_corr)
 
+        target = "Life expectancy "
+        corr = df.corr(numeric_only=True)[target]
+        top_corr = corr.drop(target).reindex(corr.drop(target).abs().sort_values(ascending=False).index).head(5)
+        st.subheader(f"Top Varibales Correlated with {target}")
+        top_corr_df = top_corr.reset_index()
+        top_corr_df.columns = ["Variable", "Correlation"]
+        st.dataframe(top_corr_df, use_container_width=True)
+
     st.divider()
     st.subheader("Distribution of Life Expectancy")
     figh, axh = plt.subplots()
@@ -215,7 +223,6 @@ elif page == "Prediction 🔮":
 
     target_selection  = st.sidebar.selectbox("Select target variable (Y)", list_var)
     features_selection = st.sidebar.multiselect("Select features (X)", list(df.columns.drop(target_selection)), default=list(df.columns.drop(target_selection)))
-    selected_metrics = st.sidebar.multiselect("Metrics to display", ["Mean Squared Error (MSE)", "Mean Absolute Error (MAE)", "R² Score"], default=["Mean Absolute Error (MAE)"])
     test_size = st.sidebar.slider("Choose test size (%)",10,40,20)
 
     ### i) X and y
@@ -229,8 +236,11 @@ elif page == "Prediction 🔮":
     from sklearn.model_selection import train_test_split
     X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=(test_size/100))
 
-    st.write(f"Training set: {X_train.shape[0]}")
-    st.write(f"Testing set: {X_test.shape[0]}")
+    coltrain, coltest = st.columns(2)
+    with coltrain:
+        st.metric("Training set entires", X_train.shape[0])
+    with coltest:
+        st.metric("Testing set entires", X_test.shape[0])
     st.divider()
 
     ## Model 
@@ -247,15 +257,18 @@ elif page == "Prediction 🔮":
 
     ### iv) Evaluation 
     from sklearn import metrics 
-    if "Mean Squared Error (MSE)" in selected_metrics:
-        mse = metrics.mean_squared_error(y_test, predictions)
-        st.write(f"- **MSE** {mse:,.2f}")
-    if "Mean Absolute Error (MAE)" in selected_metrics:
-        mae = metrics.mean_absolute_error(y_test, predictions)
-        st.write(f"- **MAE** {mae:,.2f}")
-    if "R² Score" in selected_metrics:
-        r2 = metrics.r2_score(y_test, predictions)
-        st.write(f"- **R2** {r2:,.3f}")
+    mse = metrics.mean_squared_error(y_test, predictions)
+    mae = metrics.mean_absolute_error(y_test, predictions)
+    r2 = metrics.r2_score(y_test, predictions)
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.metric("Mean Absolute Error (MAE)", np.round(mae,2))
+    with col2:
+        st.metric("Mean Squared Error (MSE)", np.round(mse,2))
+    with col3:
+        st.metric("R² Score", np.round(r2,2))
 
     st.success(f"The model's prediction is off by {np.round(mae,2)} years on average.")
 
